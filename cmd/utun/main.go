@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"time"
 
 	_ "net/http/pprof"
 
@@ -62,6 +63,18 @@ func main() {
 			log.Fatal(err)
 		}
 		defer c.Close()
+
+		// 发送heartbeat
+		go func() {
+			msg := []byte("hello")
+			for {
+				_, err := c.Write(msg)
+				if err != nil {
+					log.Println("client send heartbeat failed!")
+				}
+				time.Sleep(5 * time.Second)
+			}
+		}()
 
 		utun.Client(tun, c, key)
 	} else {

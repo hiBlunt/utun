@@ -1,6 +1,7 @@
 package utun
 
 import (
+	"bytes"
 	"io"
 	"log"
 	"net"
@@ -52,6 +53,14 @@ func Server(tun io.ReadWriter, c PacketConn, key []byte) {
 		}
 
 		b := buf[:n]
+
+		// 忽略心跳包
+		heartbeat := "hello"
+		msg := []byte(heartbeat)
+		if bytes.Equal(b, msg) {
+			log.Println("server received heartbeat ", heartbeat)
+			continue
+		}
 
 		xor(b, key)
 
