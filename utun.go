@@ -35,7 +35,6 @@ func Server(tun io.ReadWriter, c PacketConn, key []byte) {
 				_, err := c.WriteTo(b, a.(net.Addr))
 				if err != nil {
 					log.Println("WriteTo err:", err)
-					cAddr.Store(nil)
 				}
 			}
 		}
